@@ -55,7 +55,9 @@ Install Spark.
 
 ```bash
     source .envvars
-    source run.sh
+    # Only For Local
+    source env/bin/activate
+    python wsgi.py
 ```
 
 ### Credits
