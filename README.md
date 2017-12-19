@@ -43,7 +43,7 @@ Install Spark.
 
     # Install openjdk if needed
     # sudo apt-get purge openjdk*
-    # sudo apt-get -y install openjdk-7-jdk
+    # sudo apt-get install -y openjdk-7-jdk
 
     # Spark installation
     wget http://d3kbcqa49mib13.cloudfront.net/spark-1.3.1-bin-hadoop2.6.tgz -O spark.tgz
