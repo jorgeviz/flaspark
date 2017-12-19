@@ -86,13 +86,38 @@ def taskstatus(task_id, methods=['GET']):
         }), 200
     else:
         # TODO: Verify status from file from states directory
-        # TODO: When Completed, append result to data
+        try:
+            with open('states/{}'.format(task_id), 'r') as _f:
+                _prog = int(_f.read())
+        except Exception as e:
+            logger.error(e)
+            _prog = 0        
         return jsonify({
                 'task_id':task.id,
                 'status': task.state,
-                'progress': 100,
-                'msg': 'Processing...'
+                'progress': _prog,
+                'msg': 'Processing...' if _prog != 100 else 'Processed!'
             })
+
+@app.route('/fetch/<task_id>')
+def task_content(task_id, methods=['GET']):
+    """ Endpoint to consult tasks content
+    """
+    # Read dumped file
+    try:
+        with open('dumps/{}'.format(task_id), 'r') as _f:
+            _data = json.loads(_f.read())
+    except Exception as e:
+        logger.error(e)
+        return jsonify([]), 400
+    # Delete tmp files
+    os.remove('states/{}'.format(task_id))
+    os.remove('dumps/{}'.format(task_id))
+    # Response
+    return jsonify({
+            'task_id': task_id,            
+            'data': _data
+            }), 200
 
 @celery.task(bind=True)
 def spark_job_task(self):
