@@ -128,11 +128,13 @@ def spark_job_task(self):
     # Fetch Spark Config Vars
     master_path = setup.SPARK_MASTER
     project_dir = setup.APP_DIR
-    jar_path = '{}/jars/py4j-0.10.1.jar'.format(setup.SPARK_HOME)
+    jar_path = '{}/jars/py4j-0.10.1.jar'.format(setup.SPARK_CLIENT_HOME)
     spark_code_path =  project_dir + '/app/spark_test.py'
     # Call Spark Submit
+    print("{}/bin/spark-submit --master {} --jars {} {} {}".format(
+        setup.SPARK_CLIENT_HOME, master_path, jar_path, spark_code_path, task_id))
     os.system("{}/bin/spark-submit --master {} --jars {} {} {}".format(
-        setup.SPARK_HOME, master_path, jar_path, spark_code_path, task_id))
+        setup.SPARK_CLIENT_HOME, master_path, jar_path, spark_code_path, task_id))
     return {'current': 100, 'total': 100, 'status': 'Task completed!', 'result': 42}
 
 @app.errorhandler(404)

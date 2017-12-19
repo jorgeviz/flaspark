@@ -24,4 +24,5 @@ if CELERY_BROKER != 'redis':
 
 # Spark Vars
 SPARK_MASTER = os.getenv('SPARK_MASTER', 'local[2]')
-SPARK_HOME = os.getenv('SPARK_HOME', '/srv/spark')
+SPARK_MASTER_HOME = os.getenv('SPARK_MASTER_HOME', '/srv/spark')
+SPARK_CLIENT_HOME = os.getenv('SPARK_CLIENT_HOME', '/srv/spark')
