@@ -4,7 +4,14 @@ Web application framework with asyncronous Pyspark jobs execution.
 
 ## Pre-requirements
 
-Version tested in Ubuntu 16.04 LTS machine, Python 3.4  and Spark 2.0.0. (Not guaranteed for other versions).
+Flaspark v0.0.1 tested with:
+
+- Ubuntu 16.04 LTS
+- Python 3.4
+- Spark 2.0.0
+- Redis 2.8.4
+
+(Not guaranteed for other versions).
 
 Create Virtualenv and install Python reqs.
 
@@ -19,6 +26,12 @@ Create Virtualenv and install Python reqs.
     virtualenv env
     . env/bin/activate
     pip install -r requirements.txt
+```
+
+Install Redis
+
+```bash
+    sudo apt-get install redis-server
 ```
 
 Install Spark.
@@ -50,13 +63,20 @@ Install Spark.
 - APP_PORT
 - DEBUG
 - LOGGING_LEVEL
+- CELERY_BROKER
+- CELERY_HOST
+- CELERY_PORT
 
 ## Deploy
 
 ```bash
+    # Run Redis Server in background
+    redis-server &
     source .envvars
-    # Only For Local
     source env/bin/activate
+    # Start Celery
+    celery worker -A app.celery --loglevel=INFO --concurrency=1
+    # Only For Local
     python wsgi.py
 ```
 
