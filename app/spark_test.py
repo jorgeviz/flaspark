@@ -28,7 +28,7 @@ if __name__ == '__main__':
     for i in range(1, 11):
         print('Computing {}...'.format(i))
         # Compute Test Operation
-        _rdd = sc.parallelize(range(i*1000))
+        _rdd = sc.parallelize(range(1000000))
         _testing_list.append(_rdd.stats()\
                                 .asDict())
         # Save into state file
