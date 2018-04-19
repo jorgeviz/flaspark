@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 import sys
 import json
+from setup import *
 from pyspark import SparkContext, SparkConf
 
 
 def create_spark():
     """ Method to create Spark Context
     """
-    conf = SparkConf().setAppName("Flaspark")
+    conf = SparkConf()\
+        .setAppName("Flaspark")\
+        .set("spark.executor.memory","3g")\
+        .setMaster(SPARK_MASTER)
     sc = SparkContext(conf=conf)
     return sc
 
