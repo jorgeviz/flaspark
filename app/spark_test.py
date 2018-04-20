@@ -7,13 +7,90 @@ from pyspark import SparkContext, SparkConf
 
 def create_spark():
     """ Method to create Spark Context
+
+        Returns:
+        -----
+        sc : pyspark.SparkContext
     """
     conf = SparkConf()\
         .setAppName("Flaspark")\
         .set("spark.executor.memory","3g")\
+        .set("spark.executor.extraClassPath",
+            '/srv/spark/jars/postgresql-42.1.1.jar')\
+        .set('spark.driver.extraClassPath',
+            '/srv/spark/jars/postgresql-42.1.1.jar')\
+        .set('spark.jars', 'file:/srv/spark/jars/postgresql-42.1.1.jar')\
         .setMaster(SPARK_MASTER)
     sc = SparkContext(conf=conf)
     return sc
+
+def create_sqlctx(sc):
+    """ SQL Spark Context
+
+        Params:
+        -----
+        sc : pyspark.SparkContext
+
+        Returns:
+        -----
+        sqlctx : pyspark.sql.SQLContext
+    """
+    return SQLContext(sc)
+
+def create_session(sqlctx):
+    """ Spark Session
+
+        Params:
+        -----
+        sqlctx : pyspark.sql.SQLContext
+
+        Returns:
+        spark : pyspark.sql.SparkSession
+    """
+    return SparkSession\
+                .builder\
+                .getOrCreate()
+
+def query_psql(spark,
+                jdbc_uri='postgres',
+                host="localhost",
+                port=5432,
+                db="postgres",
+                table="template0",
+                props={"user":"postgres",
+                    "password":"postgres"}):
+    """ Query to a JDBC connected SQL Database
+
+        Params:
+        -----
+        spark : pyspark.sql.SparkSession
+            Spark Session
+        jdbc_uri : str
+            JDBC URI (e.g. postgresql)
+        host : str
+            DB Host
+        port : int
+            DB Port
+        db : str
+            DB name
+        table : str
+            DB Table to query from
+        props : dict
+            User, password and additional properties
+
+        Returns:
+        -----
+        df : pyspark.DataFrame
+            DB Table loaded dataframe
+    """
+    return spark.read\
+            .jdbc("jdbc:{}://{}:{}/{}"\
+                .format(jdbc_uri, host, port, db),
+                    table=table,
+                    properties={
+                        "user": props['user'],
+                        "password": props['password']
+                    })
 
 
 if __name__ == '__main__':
